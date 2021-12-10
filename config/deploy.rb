@@ -3,26 +3,32 @@ require 'mina/git'
 require 'mina/rbenv'  # for rbenv support. (https://rbenv.org)
 require 'mina/rvm'    # for rvm support. (https://rvm.io)
 
+set :term_mode, :nil
 set :application_name, 'mina_test'
-set :forward_agent, true     # SSH forward_agent.
+# set :forward_agent, true     # SSH forward_agent.
 set :repository, 'git@github.com:leanhthang/mina_test.git'
 
-task :deploy_local => :local_environment do
-  set :rails_env, 'production'
+task :local => :local_environment do
+  set :rails_env, 'development'
+  # set :domain, '139.180.146.191'
+  # set :deploy_to, '/home/ruby/deploy'
   set :domain, 'localhost'
-  set :branch, 'master'
   set :deploy_to, '/home/lat/mypj/deploy'
+  set :branch, 'master'
+  # set :deploy_to, '/home/ruby/deploy'
+  # set :identity_file,
+  # set :ssh_options, 'sshpass -p 123 '
 
   set :user, 'lat'          # Username in the server to SSH to.
   set :port, '22'           # SSH port number.
 end
 
 task :local_environment do
-  invoke :'rvm:use', 'ruby-2.7.2p137@default'
+  invoke :'rvm:use', 'ruby-2.7.2'
 end
 
 task :remote_environment do
-  invoke :'rvm:use', 'ruby-2.7.2p137@default'
+  invoke :'rvm:use', 'ruby-2.7.2'
 end
 
 # Optional settings:
@@ -33,7 +39,7 @@ set :shared_files, fetch(:shared_files, []).push('config/database.yml', 'config/
 # All paths in `shared_dirs` and `shared_paths` will be created on their own.
 task :setup do
   # command %{rbenv install 2.7.2 --skip-existing}
-  command %{rvm install ruby-2.7.2p137@default}
+  command %{rvm install ruby-2.7.2}
   command %{gem install bundler}
 end
 
@@ -63,5 +69,5 @@ task :deploy do
   end
 
   # you can use `run :local` to run tasks on local machine before of after the deploy scripts
-  # run(:local){ say 'done' }
+  run(:local){ say 'done' }
 end
